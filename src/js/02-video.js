@@ -1,30 +1,24 @@
- import Player from '@vimeo/player';
+import throttle from 'lodash.throttle'
+import Player from '@vimeo/player';
 
+const iframe = document.getElementById('vimeo-player');
+const player = new Player(iframe);
 
-    const iframe = document.querySelector('iframe');
-    const player = new Vimeo.Player(iframe);
-
-    player.on('play', function() {
-        console.log('played the video!');
+player.on('timeupdate',throttle( makeCurrentTime,1000))
+ function makeCurrentTime (data) {
+   const currentTime = data.seconds
+   console.log(currentTime)
+  localStorage.setItem("videoplayer-current-time", currentTime)
+}
+const currentTime = localStorage.getItem("videoplayer-current-time")
+  player.setCurrentTime(currentTime).then(function(seconds) {
+    }).catch(function(error) {
+    switch (error.name) {
+          case 'RangeError':
+              // the time was less than 0 or greater than the video’s duration
+              break;
+          default:
+              // some other error occurred
+              break;
+      }
     });
-
-    player.getVideoTitle().then(function(title) {
-        console.log('title:', title);
-    });
-
-
-// const timeupdate = iframe.data.
-
-
-
-
-//     const onPlay = function(data) {
-//     // data is an object containing properties specific to that event
-// };
-
-// player.on('play', onPlay);
-
-
-// player.on('eventName', function(data) {
-//     // data is an object containing properties specific to that event
-// });
